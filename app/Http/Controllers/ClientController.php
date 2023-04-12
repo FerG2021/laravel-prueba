@@ -7,11 +7,19 @@ use Illuminate\Http\Request;
 use App\Helpers\APIHelpers;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\UrlParam;
+use Knuckles\Scribe\Attributes\BodyParam;
+use Knuckles\Scribe\Attributes\QueryParam;
 
+
+#[Group("Clientes", "Rutas para el manejo de clientes")]
 class ClientController extends Controller
 {
+
+
   /**
-   * Display a listing of the resource.
+   * Listar todos los clientes.
    */
   public function index()
   {
@@ -30,7 +38,7 @@ class ClientController extends Controller
   }
 
   /**
-   * Show the form for creating a new resource.
+   * Crear un nuevo cliente.
    ** @param  \Illuminate\Http\Request  $request
    */
   public function create(Request $request)
@@ -107,7 +115,7 @@ class ClientController extends Controller
   }
 
   /**
-   * Display the specified resource.
+   * Mostrar datos del cliente
    */
   public function show($id)
   {
@@ -123,10 +131,19 @@ class ClientController extends Controller
   }
 
   /**
-   * Show the form for editing the specified resource.
-   * Show the form for creating a new resource.
-   ** @param  \Illuminate\Http\Request  $request
+   * 
+   * Modificar un cliente.
+   * @param  \Illuminate\Http\Request  $request
    */
+
+  #[UrlParam("id", "integer", "El ID del cliente.", required: true, example: "1")]
+  #[BodyParam("name", "string", "El nombre del cliente.", required: true, example: "Juan")]
+  #[BodyParam("last_name", "string", "El apellido del cliente.", required: true, example: "Perez")]
+  #[BodyParam("sex", "string", "El sexo del cliente.", required: true, example: "M")]
+  #[BodyParam("address", "string", "La dirección del cliente.", required: true, example: "Belgrano 123")]
+  #[BodyParam("phone", "numeric", "El teléfono del cliente.", required: true, example: "3843407142")]
+  #[BodyParam("mail", "string", "El mail del cliente.", required: true, example: "jp@gmail.com")]
+  #[BodyParam("enabled", "boolean", "Indica si el cliente está o no disponible.", required: true, example: "true")]
   public function edit(Request $request)
   {
     $rules = [
@@ -202,10 +219,19 @@ class ClientController extends Controller
   }
 
   /**
-   * Remove the specified resource from storage.
+   * Eliminar un cliente.
+   * @param  \Illuminate\Http\Request  $request
    */
-  public function destroy(Client $client)
+  public function destroy($id)
   {
-    //
+    $client = Client::destroy($id);
+
+    if ($client) {
+      $respuesta = APIHelpers::createAPIResponse(false, 200, 'Cliente eliminado con éxito', '');
+      return $respuesta;
+    } else {
+      $respuesta = APIHelpers::createAPIResponse(true, 500, 'No se encontró el cliente', 'No se encontró el cliente');
+      return $respuesta;
+    }
   }
 }

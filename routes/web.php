@@ -20,7 +20,7 @@ Route::get('/clientes', [ClientController::class, 'index']);
 Route::post('/clientes', [ClientController::class, 'create']);
 Route::get('/clientes/{id}', [ClientController::class, 'show']);
 Route::put('/clientes/{id}', [ClientController::class, 'edit']);
-
+Route::delete('/clientes/{id}', [ClientController::class, 'destroy']);
 
 
 Route::get('/', function () {
